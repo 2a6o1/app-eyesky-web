@@ -23,7 +23,11 @@
                 <div class="input-container">
                     <input type="text" id="latitude" placeholder="Latitude">
                     <input type="text" id="longitude" placeholder="Longitude">
-                    <input type="time" id="times" placeholder="Times">
+                    <input type="time" class="times" placeholder="Time 1">
+                    <input type="time" class="times" placeholder="Time 2">
+                    <input type="time" class="times" placeholder="Time 3">
+                    <input type="time" class="times" placeholder="Time 4">
+                    <input type="time" class="times" placeholder="Time 5">
                     <button class="admin-button" onclick="addCustomMarker()">Add Custom Marker</button>
                 </div>
             </div>
@@ -105,76 +109,86 @@
         }
 
         function showInputFields() {
-            var inputFields = document.getElementById('inputFields');
-            inputFields.style.display = 'block';
-            document.getElementById('markerList').style.display = 'block'; // Show marker list
-            document.getElementById('deviceList').style.display = 'none'; // Hide device list
-        }
+    var inputFields = document.getElementById('inputFields');
+    var deviceFields = document.getElementById('deviceFields');
+    inputFields.style.display = 'block';
+    deviceFields.style.display = 'none';
+    document.getElementById('markerList').style.display = 'block'; // Show marker list
+    document.getElementById('deviceList').style.display = 'none'; // Hide device list
+}
 
         // Update marker creation to include data (times)
-
         function addCustomMarker() {
-    var latitude = parseFloat(document.getElementById('latitude').value);
-    var longitude = parseFloat(document.getElementById('longitude').value);
-    var times = document.getElementById('times').value; // Retrieve the value of the times input field
+            var latitude = parseFloat(document.getElementById('latitude').value);
+            var longitude = parseFloat(document.getElementById('longitude').value);
+            var times = [];
 
-    if (isNaN(latitude) || isNaN(longitude)) {
-        alert('Please enter valid latitude and longitude.');
-        return;
-    }
+            // Retrieve the values of all time inputs
+            var timeInputs = document.getElementsByClassName('times');
+            for (var i = 0; i < timeInputs.length; i++) {
+                times.push(timeInputs[i].value);
+            }
 
-    // Add a custom marker
-    var customMarker = new google.maps.Marker({
-        position: {lat: latitude, lng: longitude},
-        map: map,
-        title: 'Custom Marker'
-    });
+            if (isNaN(latitude) || isNaN(longitude)) {
+                alert('Please enter valid latitude and longitude.');
+                return;
+            }
 
-    // Add the marker and its associated time to the markers array
-    markers.push({ marker: customMarker, time: times });
+            // Add a custom marker
+            var customMarker = new google.maps.Marker({
+                position: { lat: latitude, lng: longitude },
+                map: map,
+                title: 'Custom Marker'
+            });
 
-    // Center map to the custom marker
-    map.setCenter({lat: latitude, lng: longitude});
+            // Add the marker and its associated times to the markers array
+            markers.push({ marker: customMarker, times: times });
 
-    // Clear input fields
-    document.getElementById('latitude').value = '';
-    document.getElementById('longitude').value = '';
-    document.getElementById('times').value = ''; // Clear the times input field
+            // Center map to the custom marker
+            map.setCenter({ lat: latitude, lng: longitude });
 
-    // Hide input fields
-    document.getElementById('inputFields').style.display = 'none';
+            // Clear input fields
+            document.getElementById('latitude').value = '';
+            document.getElementById('longitude').value = '';
+            for (var i = 0; i < timeInputs.length; i++) {
+                timeInputs[i].value = ''; // Clear the time inputs
+            }
 
-    // Display the list of markers
-    displayMarkerList();
-}
+            // Hide input fields
+            document.getElementById('inputFields').style.display = 'none';
 
-
-function displayMarkerList() {
-    var markerUl = document.getElementById('markerUl');
-    markerUl.innerHTML = ''; // Clear previous list
-
-    // Loop through all markers and add them to the list
-    for (var i = 0; i < markers.length; i++) {
-        var marker = markers[i].marker;
-        var times = markers[i].time;
-        var markerInfo = 'Marker ' + (i + 1) + ': (' + marker.getPosition().lat() + ', ' + marker.getPosition().lng() + ')';
-        if (times) { // Check if times is defined
-            markerInfo += ', Times: ' + times; // Include times in the marker information
+            // Display the list of markers
+            displayMarkerList();
         }
-        var li = document.createElement('li');
-        li.textContent = markerInfo;
-        markerUl.appendChild(li);
-    }
-}
 
+        function displayMarkerList() {
+            var markerUl = document.getElementById('markerUl');
+            markerUl.innerHTML = ''; // Clear previous list
 
+            // Loop through all markers and add them to the list
+            for (var i = 0; i < markers.length; i++) {
+                var marker = markers[i].marker;
+                var times = markers[i].times;
+                var markerInfo = 'Marker ' + (i + 1) + ': (' + marker.getPosition().lat() + ', ' + marker.getPosition().lng() + ')';
+                if (times && times.length > 0) { // Check if times array is defined and not empty
+                    for (var j = 0; j < times.length; j++) {
+                        markerInfo += ', Time ' + (j + 1) + ': ' + times[j]; // Include each time in the marker information
+                    }
+                }
+                var li = document.createElement('li');
+                li.textContent = markerInfo;
+                markerUl.appendChild(li);
+            }
+        }
 
         function showDevices() {
-            var deviceFields = document.getElementById('deviceFields');
-            deviceFields.style.display = 'block';
-            document.getElementById('markerList').style.display = 'none'; // Hide marker list
-            document.getElementById('deviceList').style.display = 'block'; // Show device list
-        }
+    var inputFields = document.getElementById('inputFields');
+    var deviceFields = document.getElementById('deviceFields');
+    inputFields.style.display = 'none';
+    deviceFields.style.display = 'block';
+    document.getElementById('markerList').style.display = 'none'; // Hide marker list
+    document.getElementById('deviceList').style.display = 'block'; // Show device list
+}
 
         function addDevice() {
             var deviceId = document.getElementById('deviceId').value;
