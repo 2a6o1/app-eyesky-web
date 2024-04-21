@@ -1,0 +1,128 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #1a73e8;
+}
+
+.admin-panel {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.admin-button {
+    margin: 5px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.admin-button:hover {
+    background-color: #0056b3;
+}
+
+.input-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.input-container input {
+    margin: 0 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#markerList {
+    display: none; /* Initially hidden */
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#markerList ul {
+    list-style: none;
+    padding: 0;
+}
+
+#markerList li {
+    margin-bottom: 5px;
+}
+
+#deviceList {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#deviceList ul {
+    list-style: none;
+    padding: 0;
+}
+
+#deviceList li {
+    margin-bottom: 5px;
+}
+
+/* Styles for Device Input Fields */
+#deviceFields {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.input-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    justify-content: space-between; /* Align items with space between them */
+}
+
+.input-container input,
+.input-container label,
+.input-container button {
+    flex: 1; /* Each item takes up equal space */
+    margin-bottom: 10px; /* Add some space between items */
+}
+
+/* Ensure button is on a new line */
+.input-container button {
+    margin-top: 10px;
+}
+
+/* Additional styling for checkbox */
+.input-container input[type="checkbox"] {
+    width: auto; /* Reset width to auto for checkboxes */
+    margin-top: 0; /* Reset margin */
+}
