@@ -118,179 +118,68 @@
         }
 
         // Update marker creation to include data (times)
-
-        var markers = []; // Initialize an empty array to store markers
-
-
         function addCustomMarker() {
-    var latitude = parseFloat(document.getElementById('latitude').value);
-    var longitude = parseFloat(document.getElementById('longitude').value);
-    var timesInputs = document.querySelectorAll('.times'); // Get all time inputs
+            var latitude = parseFloat(document.getElementById('latitude').value);
+            var longitude = parseFloat(document.getElementById('longitude').value);
+            var times = [];
 
-    if (isNaN(latitude) || isNaN(longitude)) {
-        alert('Please enter valid latitude and longitude.');
-        return;
-    }
+            // Retrieve the values of all time inputs
+            var timeInputs = document.getElementsByClassName('times');
+            for (var i = 0; i < timeInputs.length; i++) {
+                times.push(timeInputs[i].value);
+            }
 
-    var times = []; // Initialize an empty array to store time values
+            if (isNaN(latitude) || isNaN(longitude)) {
+                alert('Please enter valid latitude and longitude.');
+                return;
+            }
 
-    // Loop through each time input and push its value to the times array
-    timesInputs.forEach(function(input) {
-        times.push(input.value);
-    });
+            // Add a custom marker
+            var customMarker = new google.maps.Marker({
+                position: { lat: latitude, lng: longitude },
+                map: map,
+                title: 'Custom Marker'
+            });
 
-    // Create a new marker
-    var customMarker = new google.maps.Marker({
-        position: { lat: latitude, lng: longitude },
-        map: map,
-        title: 'Custom Marker'
-    });
+            // Add the marker and its associated times to the markers array
+            markers.push({ marker: customMarker, times: times });
 
-    // Add the marker object and its associated times to the markers array
-    markers.push({
-        marker: customMarker,
-        times: times
-    });
+            // Center map to the custom marker
+            map.setCenter({ lat: latitude, lng: longitude });
 
-    // Center map to the custom marker
-    map.setCenter({ lat: latitude, lng: longitude });
+            // Clear input fields
+            document.getElementById('latitude').value = '';
+            document.getElementById('longitude').value = '';
+            for (var i = 0; i < timeInputs.length; i++) {
+                timeInputs[i].value = ''; // Clear the time inputs
+            }
 
-    // Clear input fields
-    document.getElementById('latitude').value = '';
-    document.getElementById('longitude').value = '';
-    timesInputs.forEach(function(input) {
-        input.value = ''; // Clear each time input field
-    });
+            // Hide input fields
+            document.getElementById('inputFields').style.display = 'none';
 
-    // Hide input fields
-    document.getElementById('inputFields').style.display = 'none';
+            // Display the list of markers
+            displayMarkerList();
+        }
 
-    // Display the list of markers
-    displayMarkerList();
-}
+        function displayMarkerList() {
+            var markerUl = document.getElementById('markerUl');
+            markerUl.innerHTML = ''; // Clear previous list
 
-
-function displayMarkerList() {
-    var markerUl = document.getElementById('markerUl');
-    markerUl.innerHTML = ''; // Clear previous list
-
-    // Loop through all markers and add them to the list
-    for (var i = 0; i < markers.length; i++) {
-        var marker = markers[i].marker;
-        var times = markers[i].times;
-        var markerInfo = 'Marker ' + (i + 1) + ': (' + marker.getPosition().lat() + ', ' + marker.getPosition().lng() + ')';
-        if (times && times.length > 0) { // Check if times array is defined and not empty
-            markerInfo += ', Times: ';
-            for (var j = 0; j < times.length; j++) {
-                markerInfo += times[j];
-                if (j < times.length - 1) {
-                    markerInfo += ', ';
+            // Loop through all markers and add them to the list
+            for (var i = 0; i < markers.length; i++) {
+                var marker = markers[i].marker;
+                var times = markers[i].times;
+                var markerInfo = 'Marker ' + (i + 1) + ': (' + marker.getPosition().lat() + ', ' + marker.getPosition().lng() + ')';
+                if (times && times.length > 0) { // Check if times array is defined and not empty
+                    for (var j = 0; j < times.length; j++) {
+                        markerInfo += ', Time ' + (j + 1) + ': ' + times[j]; // Include each time in the marker information
+                    }
                 }
-            }
-            var closestTime = findClosestTime(times);
-            var closestTimeFormatted = closestTime ? formatTime(closestTime) : null;
-            var timeDifference = calculateTimeDifference(closestTime);
-            markerInfo += ', Closest Time: ' + (closestTimeFormatted ? closestTimeFormatted : 'N/A') + ', Time Difference: ' + (timeDifference ? timeDifference : 'N/A');
-        }
-        var li = document.createElement('li');
-        li.textContent = markerInfo;
-        markerUl.appendChild(li);
-    }
-}
-
-
-
-
-// Helper function to find the closest time
-function findClosestTime(times) {
-    var currentTime = new Date();
-    var closestTime = null;
-    var minDifference = Infinity;
-    for (var i = 0; i < times.length; i++) {
-        var time = parseTimeString(times[i]);
-        if (!time) continue;
-        var difference = Math.abs(currentTime - time);
-        if (difference < minDifference) {
-            minDifference = difference;
-            closestTime = time;
-        }
-    }
-    return closestTime;
-}
-
-// Helper function to parse time string into Date object
-function parseTimeString(timeString) {
-    var parts = timeString.split(':');
-    if (parts.length !== 2) {
-        console.error('Invalid time format:', timeString);
-        return null;
-    }
-    var hours = parseInt(parts[0], 10);
-    var minutes = parseInt(parts[1], 10);
-    if (isNaN(hours) || isNaN(minutes)) {
-        console.error('Invalid time components:', timeString);
-        return null;
-    }
-    var time = new Date();
-    time.setHours(hours, minutes);
-    return time;
-}
-
-// Helper function to format time
-function formatTime(time) {
-    if (!time) {
-        console.error('Invalid time:', time);
-        return null;
-    }
-    var hours = time.getHours().toString().padStart(2, '0');
-    var minutes = time.getMinutes().toString().padStart(2, '0');
-    return hours + ':' + minutes;
-}
-
-// Function to calculate the time difference between two times
-function calculateTimeDifference(targetTime) {
-    var now = new Date();
-    var difference = targetTime.getTime() - now.getTime();
-    var hours = Math.floor(difference / (1000 * 60 * 60));
-    var minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((difference % (1000 * 60)) / 1000);
-    return hours + ":" + minutes + ":" + seconds;
-}
-
-// Function to update the time difference dynamically
-function updateDynamicTimeDifference() {
-    var now = new Date();
-    for (var i = 0; i < markers.length; i++) {
-        var marker = markers[i].marker;
-        var times = markers[i].times;
-        var closestTime = findClosestTime(times);
-        if (closestTime) {
-            var timeDifference = calculateTimeDifference(now, closestTime);
-            var markerInfoElement = document.getElementById('markerInfo_' + i);
-            if (markerInfoElement) {
-                markerInfoElement.textContent = markerInfoElement.textContent.split('Time Difference:')[0] + 'Time Difference: ' + (timeDifference ? timeDifference : 'N/A');
+                var li = document.createElement('li');
+                li.textContent = markerInfo;
+                markerUl.appendChild(li);
             }
         }
-    }
-}
-
-// Function to find the closest time to the current time
-function findClosestTime(times) {
-    var now = new Date();
-    var closestTime = null;
-    var closestDifference = Infinity;
-    for (var j = 0; j < times.length; j++) {
-        var targetTime = parseTimeString(times[j]);
-        if (targetTime && targetTime.getTime() >= now.getTime() && targetTime.getTime() - now.getTime() < closestDifference) {
-            closestTime = targetTime;
-            closestDifference = targetTime.getTime() - now.getTime();
-        }
-    }
-    return closestTime;
-}
-
-// Update the time difference every second
-setInterval(updateDynamicTimeDifference, 1000);
 
         function showDevices() {
             var inputFields = document.getElementById('inputFields');
