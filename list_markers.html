@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Markers</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>List of Markers</h1>
+
+        <!-- Search filter -->
+        <input type="text" id="searchInput" placeholder="Search markers..." oninput="filterMarkers()">
+
+        <!-- List of Markers -->
+        <div id="markerList_user">
+            <ul id="markerUl"></ul>
+        </div>
+
+        <a href="add_marker.html">Add Marker</a> <!-- Link back to the Add Marker page -->
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Dummy data for markers
+        var markers = [
+            { lat: 21.100252, lng: -101.671740, times: ['08:00', '12:00', '15:00', '18:00', '21:00'] },
+            { lat: 21.100429, lng: -101.672323, times: ['09:00', '13:00', '16:00', '19:00', '22:00'] },
+            { lat: 21.100668, lng: -101.673013, times: ['10:00', '14:00', '17:00', '20:00', '23:00'] },
+            { lat: 21.100829, lng: -101.673713, times: ['11:00', '15:00', '18:00', '21:00', '00:00'] },
+            { lat: 21.100956, lng: -101.674645, times: ['12:00', '16:00', '19:00', '22:00', '01:00'] },
+            { lat: 21.100995, lng: -101.675477, times: ['13:00', '17:00', '20:00', '23:00', '02:00'] }
+        ];
+
+        // Display the list of markers initially
+        displayMarkerList();
+
+        function displayMarkerList() {
+            var markerUl = document.getElementById('markerUl');
+            markerUl.innerHTML = ''; // Clear previous list
+
+            // Loop through all markers and add them to the list
+            for (var i = 0; i < markers.length; i++) {
+                var marker = markers[i];
+                var li = document.createElement('li');
+
+                var markerNumber = document.createElement('span');
+                markerNumber.textContent = 'Marker ' + (i + 1);
+
+                var latitude = document.createElement('span');
+                latitude.textContent = 'Latitude: ' + marker.lat;
+
+                var longitude = document.createElement('span');
+                longitude.textContent = 'Longitude: ' + marker.lng;
+
+                var times = document.createElement('span');
+                times.textContent = 'Times: ' + marker.times.join(', ');
+
+                li.appendChild(markerNumber);
+                li.appendChild(latitude);
+                li.appendChild(longitude);
+                li.appendChild(times);
+
+                markerUl.appendChild(li);
+            }
+        }
+
+        // Function to filter markers based on search input
+        function filterMarkers() {
+            var input, filter, ul, li, span, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            ul = document.getElementById('markerUl');
+            li = ul.getElementsByTagName('li');
+
+            // Loop through all list items, and hide those who don't match the search query
+            for (var i = 0; i < li.length; i++) {
+                span = li[i].getElementsByTagName("span");
+                for (var j = 0; j < span.length; j++) {
+                    txtValue = span[j].textContent || span[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        li[i].style.display = "";
+                        break; // If any of the spans match, display the list item
+                    } else {
+                        li[i].style.display = "none"; // Hide the list item if no match is found
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

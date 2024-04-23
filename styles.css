@@ -126,3 +126,38 @@ h1 {
     width: auto; /* Reset width to auto for checkboxes */
     margin-top: 0; /* Reset margin */
 }
+
+#markerList_user {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#markerList_user ul {
+    list-style: none;
+    padding: 0;
+}
+
+#markerList_user li {
+    margin-bottom: 5px;
+}
+
+#markerUl {
+    list-style: none;
+    padding: 0;
+}
+
+#markerUl li {
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+#markerUl li span {
+    display: block;
+    margin-bottom: 5px;
+}
+
